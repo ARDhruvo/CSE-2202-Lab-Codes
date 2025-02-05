@@ -1,4 +1,3 @@
-
 #include <bits/stdc++.h>
 #include <cmath>
 using namespace std;
@@ -25,7 +24,7 @@ void printEqn()
             cout << " ";
         }
     }
-    cout << a[0] << endl;
+    cout << a[0] << " = 0" << endl;
     paragraph;
 }
 
@@ -119,6 +118,69 @@ void secant()
     }
     float x0 = (-a[0]) / a[1];
     roots.insert(x0);
+    cout << "Roots using secant: " << endl;
+    for (auto i : roots)
+    {
+        cout << i << "\t";
+    }
+}
+
+void bisect()
+{
+    while (deg > 1)
+    {
+        imaginary = complexCheck();
+        if (imaginary)
+        {
+            cout << "There are Imaginary Roots" << endl;
+            return;
+        }
+        float xd = .001;
+        float x0 = -searchBracket();
+        float xm = searchBracket();
+        float x1 = x0 + xd;
+
+        float x2 = 0, relErr;
+
+        while ((f(x0) * f(x1)) >= 0)
+        {
+            if (x1 > xm)
+            {
+                break;
+            }
+            x0 = x1;
+            x1 = x0 + xd;
+        }
+
+        paragraph;
+
+        do
+        {
+            float prev = x2;
+            float f0 = f(x0), f1 = f(x1);// Function values for the ease of calculation
+            x2 = (x1 + x0) / 2; // Formula for Secant method where x2 is root; f1 and f0 can be replaced wit f(x1) and f(x0) respectively
+            relErr = fabs((x2 - prev)/prev);                 // Finding out the relative error to cont
+            float f2 = f(x2);
+            if((f0 * f2) > 0)
+            {
+                x1 = x2;
+            }
+            else
+            {
+                x0 = x2;
+            }
+        } while (relErr > 0.00001);
+        roots.insert(x2);
+        synthDiv(x2);
+        printEqn();
+    }
+    float x0 = (-a[0]) / a[1];
+    roots.insert(x0);
+    cout << "Roots using bisection: " << endl;
+    for (auto i : roots)
+    {
+        cout << i << endl;
+    }
 }
 
 int main()
@@ -137,10 +199,8 @@ int main()
     printEqn();
 
     secant();
-
-    cout << "Roots using secant: " << endl;
-    for (auto i : roots)
-    {
-        cout << i << "\t";
-    }
+/*
+    bisect();
+*/
+    
 }
